@@ -21,6 +21,7 @@ def list_pets():
 @app.route("/add", methods=["GET", "POST"])
 def add_pet():
     form = AddPetForm()
+    print(form)
     if form.validate_on_submit():
         name = form.name.data
         species = form.species.data
@@ -28,8 +29,7 @@ def add_pet():
         age = form.age.data
         notes = form.notes.data
 
-        pet = Pet(name=name, species=species,
-                  url=url, age=age, notes=notes)
+        pet = Pet(name=name, species=species, url=url, age=age, notes=notes)
         db.session.add(pet)
         db.session.commit()
         flash(f"{pet.name} added.")
@@ -45,5 +45,4 @@ def add_pet():
 # def api_get_pet(pet_id):
 #     return render_template("base.html")
 #
-# if __name__ == '__main__':
-#     app.run()
+

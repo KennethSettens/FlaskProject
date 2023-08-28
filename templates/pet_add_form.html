@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
     <form method="POST">
+        {{ form.csrf_token }}
         {% for field in form if field.widget.input_type != 'hidden' %}
         {{ field.label }}
         {{ field }}
