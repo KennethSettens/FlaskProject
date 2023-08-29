@@ -29,3 +29,16 @@ class AddPetForm(FlaskForm):
     )
 
 
+class EditPetForm(FlaskForm):
+    photo_url = StringField(
+        "Photo URL",
+        validators=[Optional(), URL()],
+    )
+    notes = TextAreaField(
+        "Comments",
+        validators=[Optional(), Length(min=10)],
+    )
+    available = BooleanField("Available?")
+
+
+
