@@ -1,6 +1,6 @@
 from flask import Flask, url_for, render_template, redirect, flash, jsonify
 from models import db, connect_db, Pet
-from forms import AddPetForm
+from forms import AddPetForm, EditPetForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "1235"
@@ -21,6 +21,7 @@ def list_pets():
 @app.route("/add", methods=["GET", "POST"])
 def add_pet():
     form = AddPetForm()
+    print(form)
     if form.validate_on_submit():
         name = form.name.data
         species = form.species.data
@@ -28,8 +29,7 @@ def add_pet():
         age = form.age.data
         notes = form.notes.data
 
-        pet = Pet(name=name, species=species,
-                  url=url, age=age, notes=notes)
+        pet = Pet(name=name, species=species, photo_url=url, age=age, notes=notes)
         db.session.add(pet)
         db.session.commit()
         flash(f"{pet.name} added.")
@@ -37,13 +37,19 @@ def add_pet():
     else:
         return render_template("pet_add_form.html", form=form)
 
-# @app.route("/<int:pet_id>", methods=["GET", "POST"])
-# def edit_pet(pet_id):
-#
-#
-# @app.route("/api/pets/<int:pet_id>", methods=['GET'])
-# def api_get_pet(pet_id):
-#     return render_template("base.html")
-#
-# if __name__ == '__main__':
-#     app.run()
+
+@app.route("/<int:pet_id>", methods=["GET", "POST"])
+def edit_pet(pet_id):
+    pet = Pet.query.get_or_404(pet_id)
+    form = EditPetForm(obj=pet)
+
+    if form.validate_on_submit():
+        pet.photo_url = form.photo_url.data
+        pet.notes = form.notes.data
+        pet.available = form.available.data
+        db.session.commit()
+        flash("pet updated")
+        return redirect(url_for('list_pets'))
+    else:
+        return render_template("pet_edit_form.html", form=form, pet=pet)
+

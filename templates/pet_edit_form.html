@@ -1,4 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<h1>{{ pet.name }}</h1>
+
+    {% if pet.photo_url %}
+    <img src="{{ pet.photo_url }}" alt="pet photo">
+    {% endif %}
+
+<h2>Update</h2>
+
+<form method="POST">
+        {{ form.csrf_token }}
+        {% for field in form if field.widget.input_type != 'hidden' %}
+        {{ field.label }}
+        {{ field }}
+        <span>
+            {% if field.errors %}
+                {% for error in field.errors %}
+	                <b>{{ error }}</b>
+                {% endfor %}
+            {% endif %}
+        </span>
+        {% endfor %}
+    <button type="submit"> Submit</button>
+</form>
+
 {% endblock %}
